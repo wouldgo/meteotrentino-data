@@ -1,4 +1,4 @@
-FROM node:14.17.0-alpine3.13 AS builder
+FROM arm64v8/node:14.17.0-alpine3.13 AS builder
 RUN apk add --no-cache \
   python3 \
   make \
@@ -17,7 +17,7 @@ RUN find . -maxdepth 1 ! \
   -exec rm -Rf {} + || true
 RUN npm ci
 
-FROM node:14.17.0-alpine3.13 AS runner
+FROM arm64v8/node:14.17.0-alpine3.13 AS runner
 WORKDIR /home
 COPY --from=builder /home/logic .
 CMD ["node", "index.js"]
