@@ -1,4 +1,8 @@
 FROM node:14.17.0-alpine3.13 AS builder
+RUN apk add --no-cache \
+  python3 \
+  make \
+  build-base
 WORKDIR /home
 COPY . logic
 WORKDIR /home/logic
