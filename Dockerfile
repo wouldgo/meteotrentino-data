@@ -11,7 +11,7 @@ RUN find . -maxdepth 1 ! \
     -name "package-lock.json" \
   \) \
   -exec rm -Rf {} + || true
-RUN npm ci --only=prod
+RUN npm ci
 
 FROM node:14.17.0-alpine3.13 AS runner
 WORKDIR /home
