@@ -11,7 +11,7 @@ const {Client} = require('undici')
 
       const stringyfiedBufferResponse = Buffer.concat(chunks).toString('utf-8');
 
-      if (statusCode < 200 && statusCode > 300) {
+      if (statusCode < 200 || statusCode > 300) {
 
         throw new Error(stringyfiedBufferResponse || JSON.stringify({
           'status': statusCode
