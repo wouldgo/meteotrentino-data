@@ -4,8 +4,8 @@
   "description": "gathers outside informations",
   "main": "index.js",
   "scripts": {
-    "debug": "node --inspect-brk index.js",
-    "start": "node index.js",
+    "debug": "env $(cat ${ENV:-/dev/null} | xargs) node --inspect-brk index.js",
+    "start": "env $(cat ${ENV:-/dev/null} | xargs) node index.js",
     "lint": "eslint .",
     "validate": "npm run lint",
     "precommit": "npm run validate",
@@ -27,6 +27,7 @@
     "validate"
   ],
   "dependencies": {
+    "@influxdata/influxdb-client": "^1.14.0",
     "date-fns": "2.22.1",
     "date-fns-tz": "1.1.4",
     "make-promises-safe": "5.1.0",
