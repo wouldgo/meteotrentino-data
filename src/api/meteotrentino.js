@@ -33,7 +33,7 @@ const parser = require('xml2json')
           aTemperature.UM,
           aTemperature.value
         ))
-        , moisture = lastData.relative_humidity_list.relative_humidity.map(aMoisture => makePoint(
+        , humidity = lastData.relative_humidity_list.relative_humidity.map(aMoisture => makePoint(
           aMoisture.date,
           aMoisture.UM,
           aMoisture.value
@@ -43,7 +43,7 @@ const parser = require('xml2json')
         rains,
         radiations,
         temperatures,
-        moisture
+        humidity
       };
     }
   , parseHumidex = (name, data) => {
@@ -108,28 +108,25 @@ module.exports = async function meteoTrentinoModule({Client, checkCode, log, met
         , actualHumidexData = await humidexData();
 
       for (const {code, name} of stations) {
-        const {rains, radiations, temperatures, moisture} = await weatherStationData(code)
+        const {rains, radiations, temperatures, humidity} = await weatherStationData(code)
           , {'timestamp': timestampHumidex, ...restHumidex} = parseHumidex(name, actualHumidexData);
 
         for (let index = 0; index < temperatures.length; index += 1) {
           const {timestamp, ...restTemp} = temperatures[index]
             , {'timestamp': timestampRains, ...restRains} = rains[index]
             , {'timestamp': timestampRadiations, ...restRadiations} = radiations[index]
-            , {'timestamp': timestampTemperatures, ...restTemperatures} = temperatures[index]
-            , {'timestamp': timestampMoisture, ...restMoisture} = moisture[index];
+            , {'timestamp': timestampMoisture, ...restHumidity} = humidity[index];
 
           if (isSameMinute(timestamp, timestampRains) &&
             isSameMinute(timestampRains, timestampRadiations) &&
-            isSameMinute(timestampRadiations, timestampTemperatures) &&
-            isSameMinute(timestampTemperatures, timestampMoisture)) {
+            isSameMinute(timestampRadiations, timestampMoisture)) {
             const toPush = {
-                name,
                 timestamp,
+                'city': name,
                 'temperature': restTemp,
-                'moisture': restMoisture,
+                'humidity': restHumidity,
                 'rains': restRains,
-                'radiations': restRadiations,
-                'temperatures': restTemperatures
+                'radiations': restRadiations
               };
 
             if (isSameMinute(timestamp, timestampHumidex)) {

@@ -4,24 +4,14 @@ const apiModule = require('./api')
   , modelModule = require('./model');
 
 module.exports = async tools => {
-  const {log} = tools
-    , {metetrentino, close} = await apiModule(tools)
-    , {storeData} = await modelModule(tools);
+  const {metetrentino, close} = await apiModule(tools)
+    , {write} = await modelModule(tools);
 
   return async function gathering() {
     const metetrentinoData = await metetrentino();
 
     await close();
-
-    for (const {timestamp, ...rest} of metetrentinoData) {
-
-      debugger;
-      log.info(`${timestamp}: ${Object.keys(rest)}`);
-      log.info(storeData);
-    }
-    return {
-      ...metetrentinoData
-    };
+    return await write(metetrentinoData);
   };
 
 };
